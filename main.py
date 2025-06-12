@@ -51,16 +51,24 @@ def play(ctx):
 
 
 @cli.command(help="get an AI to play the game")
-@click.pass_context
 @click.argument('ai', nargs=1, type=click.STRING)
-def ai(ctx, ai: str):
+@click.option('--interactive', is_flag=True, help="enable interactive mode")
+@click.pass_context
+def ai(ctx, ai: str, interactive: bool):
     words = ctx.obj['word_list']
     game = ctx.obj['game']
 
     if ai == 'random':
-        play_ai(game, words, RandomAI(words))
+        ai_engine = RandomAI
     elif ai == 'simple':
-        play_ai(game, words, SimpleAI(words))
+        ai_engine = SimpleAI
+    else:
+        raise RuntimeError(f'Invalid AI engine: \'{ai}\'')
+
+    if interactive:
+        play_interactive(words, ai_engine(words))
+    else:
+        play_ai(game, words, ai_engine(words))
 
 
 def _readfile(name: str) -> list[str]:
@@ -92,6 +100,35 @@ def play_ai(game, words, ai: WordleAI):
         print(f'Well done! The AI found the Wordle in {game.counter} guesses')
     else:
         print(f'The word was: {game.reveal()}. Better luck next time AI!')
+
+
+def play_interactive(words, ai: WordleAI):
+    logging.debug('Starting interactive AI session...')
+    guess_history = []
+    score_total = 0
+    counter = 0
+    while (score_total < 10) & (counter < 6):
+        guess = ai.next_guess(guess_history)
+        counter += 1
+        # validate input
+        if len(guess) < 5 | len(guess) > 5:
+            raise RuntimeError(
+                'words must be 5 characters - is the AI broken?')
+        elif not guess in words:
+            raise RuntimeError(
+                'invalid word - does the AI need retraining with a new word set?')
+        else:
+            scores = input(f'guess: {guess} | enter scores: ')
+            scores_list = list(int(x) for x in scores)
+            score_total = sum(scores_list)
+            guess_history.append((guess, scores_list))
+        logging.debug(
+            f'counter: {counter}, guess: {guess} score_total: {score_total}')
+
+    if score_total == 10:
+        print(f'Well done! The AI found the Wordle in {counter} guesses')
+    else:
+        print(f'The AI failed to guess the word. Better luck next time AI!')
 
 
 if __name__ == '__main__':

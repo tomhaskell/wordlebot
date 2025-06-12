@@ -28,3 +28,13 @@ Available AIs:
 
 - `random` - RandomAI is the dumbest AI - it just picks a completely random word for each guess, ignoring
     previous answers and results. Really it's just here to test the AI gameplay with.
+- `simple` - SimpleAI uses a basic rule-based approach. It starts with a random word and then chooses the
+    next word based on the results
+
+### Interactive mode
+Interactive mode allows you to provide the scores to the AI - either based on a word you have thought up
+or by entering into a third-party wordle app and relaying the results
+
+```bash
+python main.py ai --interactive <ai_name>
+```

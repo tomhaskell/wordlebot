@@ -28,7 +28,7 @@ class SimpleAI(WordleAI):
         poss_words = list(filter(intel.match, self.words))
         logging.debug(f'possible words: {len(poss_words)}')
         if len(poss_words) < 1:
-            logging.error('No possible words - random guess time!')
+            logging.error(f'No possible words. Intel: {intel}')
             return choice(self.words)
         return choice(poss_words)
 

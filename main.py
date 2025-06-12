@@ -2,8 +2,9 @@ import click
 import logging
 from random import choice
 from game import Game
-from ai.random import RandomAI
 from wordle_ai import WordleAI
+from ai.random import RandomAI
+from ai.simple import SimpleAI
 
 
 @click.group()
@@ -58,6 +59,8 @@ def ai(ctx, ai: str):
 
     if ai == 'random':
         play_ai(game, words, RandomAI(words))
+    elif ai == 'simple':
+        play_ai(game, words, SimpleAI(words))
 
 
 def _readfile(name: str) -> list[str]:

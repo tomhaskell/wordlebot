@@ -16,3 +16,15 @@ For each guess you make, the result is shown as follows:
 0. no match
 1. correct letter, wrong location
 2. direct match
+
+## AI play
+To get an AI to play the game:
+
+```bash
+python main.py ai <ai_name>
+```
+
+Available AIs:
+
+- `random` - RandomAI is the dumbest AI - it just picks a completely random word for each guess, ignoring
+    previous answers and results. Really it's just here to test the AI gameplay with.

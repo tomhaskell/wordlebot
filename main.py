@@ -2,6 +2,8 @@ import click
 import logging
 from random import choice
 from game import Game
+from ai.random import RandomAI
+from wordle_ai import WordleAI
 
 
 @click.group()
@@ -47,10 +49,46 @@ def play(ctx):
         print(f'The word was: {game.reveal()}. Better luck next time!')
 
 
+@cli.command(help="get an AI to play the game")
+@click.pass_context
+@click.argument('ai', nargs=1, type=click.STRING)
+def ai(ctx, ai: str):
+    words = ctx.obj['word_list']
+    game = ctx.obj['game']
+
+    if ai == 'random':
+        play_ai(game, words, RandomAI(words))
+
+
 def _readfile(name: str) -> list[str]:
     with open(name, 'r') as file:
         words = file.read().splitlines()
     return words
+
+
+def play_ai(game, words, ai: WordleAI):
+    guess_history = {}
+    while game.state == Game.State.PLAYING:
+        guess = ai.next_guess(guess_history)
+        # validate input
+        if len(guess) < 5 | len(guess) > 5:
+            raise RuntimeError(
+                'words must be 5 characters - is the AI broken?')
+        elif not guess in words:
+            raise RuntimeError(
+                'invalid word - does the AI need retraining with a new word set?')
+        else:
+            res = game.guess(guess)
+            scores = ''.join(str(i) for i in res.scores)
+            logging.debug(f'{guess}: {scores}')
+            guess_history[guess] = res.scores
+
+    for k in guess_history.keys():
+        print(f'{k} {''.join(str(i) for i in guess_history[k])}')
+    if game.state == Game.State.WIN:
+        print(f'Well done! The AI found the Wordle in {game.counter} guesses')
+    else:
+        print(f'The word was: {game.reveal()}. Better luck next time AI!')
 
 
 if __name__ == '__main__':

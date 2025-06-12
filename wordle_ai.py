@@ -6,5 +6,9 @@ class WordleAI(ABC):
         self.words = words
 
     @abstractmethod
-    def next_guess(self, previous_guesses) -> str:
+    def next_guess(self, previous_guesses: list[tuple[str, list[int]]]) -> str:
+        """
+        next_guess() returns the next guess the AI has generated
+        previous_guesses is a list of tuples of the form (word, scores) for the previous guesses
+        """
         pass

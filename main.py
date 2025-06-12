@@ -67,7 +67,7 @@ def _readfile(name: str) -> list[str]:
 
 
 def play_ai(game, words, ai: WordleAI):
-    guess_history = {}
+    guess_history = []
     while game.state == Game.State.PLAYING:
         guess = ai.next_guess(guess_history)
         # validate input
@@ -81,10 +81,10 @@ def play_ai(game, words, ai: WordleAI):
             res = game.guess(guess)
             scores = ''.join(str(i) for i in res.scores)
             logging.debug(f'{guess}: {scores}')
-            guess_history[guess] = res.scores
+            guess_history.append((guess, res.scores))
 
-    for k in guess_history.keys():
-        print(f'{k} {''.join(str(i) for i in guess_history[k])}')
+    for g in guess_history:
+        print(f'{g[0]} {''.join(str(i) for i in g[1])}')
     if game.state == Game.State.WIN:
         print(f'Well done! The AI found the Wordle in {game.counter} guesses')
     else:

@@ -58,6 +58,10 @@ class Game:
 
         return Game.Response(sc, total, self.counter)
 
+    def reveal(self) -> str:
+        self.state = Game.State.LOSE
+        return self.__answer
+
     class State(Enum):
         PLAYING = 1
         WIN = 2

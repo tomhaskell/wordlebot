@@ -30,7 +30,7 @@ def play(ctx):
     game = ctx.obj['game']
 
     while game.state == Game.State.PLAYING:
-        guess = input('Guess: ').lower()
+        guess = input('Guess:  ').lower()
         # validate input
         if len(guess) < 5 | len(guess) > 5:
             print('words must be 5 characters, try again')
@@ -38,12 +38,13 @@ def play(ctx):
             print('invalid word, try again')
         else:
             res = game.guess(guess)
-            print(res.scores)
+            scores = ''.join(str(i) for i in res.scores)
+            print(f'Result: {scores}')
 
     if game.state == Game.State.WIN:
         print(f'Well done! You found the Wordle in {game.counter} guesses')
     else:
-        print(f'Better luck next time!')
+        print(f'The word was: {game.reveal()}. Better luck next time!')
 
 
 def _readfile(name: str) -> list[str]:

@@ -5,6 +5,7 @@ from game import Game
 from wordle_ai import WordleAI
 from ai.random import RandomAI
 from ai.simple import SimpleAI
+from ai.stats import StatsAI
 
 
 @click.group()
@@ -62,6 +63,8 @@ def ai(ctx, ai: str, interactive: bool):
         ai_engine = RandomAI
     elif ai == 'simple':
         ai_engine = SimpleAI
+    elif ai == 'stats':
+        ai_engine = StatsAI
     else:
         raise RuntimeError(f'Invalid AI engine: \'{ai}\'')
 

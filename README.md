@@ -30,6 +30,10 @@ Available AIs:
     previous answers and results. Really it's just here to test the AI gameplay with.
 - `simple` - SimpleAI uses a basic rule-based approach. It starts with a random word and then chooses the
     next word based on the results
+- `stats` - StatsAI performs a statistical analysis of all possible words to assign a probability to each
+    letter occurring in each position and uses that to calculate a score for a each word. The
+    probability is updated based on the guesses (i.e. matched letter = 100%) to produce new scores.
+    The word with the heighest score is chosen each time.
 
 ### Interactive mode
 Interactive mode allows you to provide the scores to the AI - either based on a word you have thought up

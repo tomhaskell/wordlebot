@@ -1,5 +1,6 @@
 import logging
 from wordle_ai import WordleAI
+from copy import deepcopy
 
 
 class StatsAI(WordleAI):
@@ -57,6 +58,8 @@ class StatsAI(WordleAI):
 
     def next_guess(self, previous_guesses: list[tuple[str, list[int]]]) -> str:
         # update scores based on previous guesses
+        letter_occurances = deepcopy(self.letter_occurances)
+        total_occurances = deepcopy(self.total_occurances)
         matched_letters = []
         found_letters = []
         for g in previous_guesses:
@@ -67,23 +70,23 @@ class StatsAI(WordleAI):
                 s = scores[i]
 
                 if s == 2:
-                    self.letter_occurances[i][c] = 1.0
-                    self.total_occurances[c] = 1.0
+                    letter_occurances[i][c] = 1.0
+                    total_occurances[c] = 1.0
                     matched_letters.append(c)
                 elif s == 1:
-                    self.letter_occurances[i][c] = 0.0
-                    self.total_occurances[c] = 1.0
+                    letter_occurances[i][c] = 0.0
+                    total_occurances[c] = 1.0
                     found_letters.append(c)
                 else:
-                    self.letter_occurances[i][c] = 0.0
+                    letter_occurances[i][c] = 0.0
                     if (not c in matched_letters) & (not c in found_letters):
-                        self.total_occurances[c] = 0.0
+                        total_occurances[c] = 0.0
 
         # score words based on occurance values
         word_scores = {}
         for word in self.words:
             word_scores[word] = sum(
-                list(map(lambda x: self.letter_occurances[x][word[x]] * self.total_occurances[word[x]], range(5))))
+                list(map(lambda x: letter_occurances[x][word[x]] * total_occurances[word[x]], range(5))))
 
         # 0 words that have already been guessed
         for g in previous_guesses:
